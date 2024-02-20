@@ -1,7 +1,7 @@
 class Solution {
     public void moveZeroes(int[] arr) {
         int i = 0;
-        int j = 1;
+        int j = 0;
         
         /*
             0 1 2 3 4
@@ -16,8 +16,8 @@ class Solution {
             }
             else{
                 int temp = arr[i];
-                arr[i] = arr[j - 1];
-                arr[j - 1] = temp;
+                arr[i] = arr[j];
+                arr[j] = temp;
                 
                 i++;
                 j++;
