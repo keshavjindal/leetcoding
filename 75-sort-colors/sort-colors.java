@@ -2,7 +2,7 @@ class Solution {
     public void sortColors(int[] arr) {
         /*
             00000 1111?????2222
-                  j.  i.  k 
+                  j.  i.   k 
             
             i -> unknown
             j -> pehle 1 pe
@@ -11,9 +11,9 @@ class Solution {
         */
         int i = 0;
         int j = 0;
-        int k = arr.length - 1;
+        int k = arr.length;
         
-        while(i <= k){
+        while(i < k){
             if(arr[i] == 1){
                 i++;
             }
@@ -23,7 +23,7 @@ class Solution {
                 j++;
             }
             else if(arr[i] == 2){
-                swap(arr , i , k);
+                swap(arr , i , k - 1);
                 k--;
             }
         }
