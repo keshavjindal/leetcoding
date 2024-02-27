@@ -3,21 +3,24 @@ class Solution {
         int m = grid.length;
         int n = grid[0].length;
         
-        int[][] dp = new int[m][n];
-        
-        for(int i=m-1; i>=0; i--){
-            for(int j=n-1; j>=0; j--){
-                if(i == m - 1 && j == n - 1) dp[i][j] = grid[i][j];
-                else if(i == m - 1) dp[i][j] = grid[i][j] + dp[i][j + 1];
-                else if(j == n - 1) dp[i][j] = grid[i][j] + dp[i + 1][j];
-                else {
-                    dp[i][j] = grid[i][j] + Math.min(dp[i][j + 1] , dp[i + 1][j]);
-                }
-                
-                // System.out.println(i + " " + j + " " + dp[i][j]);
-            }
+        dp = new int[m + 10][n + 10];
+        for(int[] arr : dp){
+            Arrays.fill(arr , -1);
         }
         
-        return dp[0][0];
+        return solve(grid, 0, 0);
+    }
+    
+    public int[][] dp;
+    
+    public int solve(int[][] grid, int i, int j){
+        if(i == grid.length - 1 && j == grid[0].length - 1) return grid[i][j];
+        if(i == grid.length || j == grid[0].length) return Integer.MAX_VALUE;
+        if(dp[i][j] != -1) return dp[i][j];
+        
+        int rr1 = solve(grid, i, j + 1);
+        int rr2 = solve(grid, i + 1, j);
+        
+        return dp[i][j] = grid[i][j] + Math.min(rr1 , rr2);
     }
 }
