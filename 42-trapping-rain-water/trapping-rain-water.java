@@ -9,7 +9,7 @@ class Solution {
         int lm = 0;
         int rm = 0;
         
-        while(i < j){
+        while(i <= j){
             if(arr[i] <= arr[j]){
                 // lm is less than rm
                 if(lm > arr[i]) ans += (lm - arr[i]);
