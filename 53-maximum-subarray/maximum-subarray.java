@@ -3,8 +3,7 @@ class Solution {
         int csum = arr[0];
         int ans = arr[0];
         
-        for(int i=1; i < arr.length; i++)
-        {
+        for(int i=1; i<arr.length; i++){
             if(csum < 0) csum = arr[i];
             else csum += arr[i];
             
@@ -16,6 +15,9 @@ class Solution {
     
     /*
         -2 1 -3 4 -1 2 1 -5 4
+        
+        csum -> 6
+        ans -> 6
     
     */
 }
