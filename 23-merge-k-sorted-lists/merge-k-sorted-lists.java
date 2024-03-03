@@ -28,6 +28,8 @@ class Solution {
             ans = rem;
             
             if(rem.next != null) pq.add(rem.next);
+            
+            rem.next = null;
         }
         
         return helper.next;   
