@@ -41,13 +41,14 @@ class Solution {
         recStack[src] = true;
         
         for(int nbr : graph.get(src)){
+            if(visited[nbr] == true && recStack[nbr] == true){
+                return true;
+            }
+            
             if(visited[nbr] == false){
                 if(solve(graph, visited, recStack, nbr) == true){
                     return true;
                 }
-            }
-            else if(recStack[nbr] == true){
-                return true;
             }
         }
         
