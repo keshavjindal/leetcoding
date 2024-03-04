@@ -17,13 +17,6 @@ class LRUCache {
             this.prev = null;
             this.next = null;
         }
-        
-        Node(int key, int val, Node prev, Node next){
-            this.key = key;
-            this.val = val;
-            this.prev = prev;
-            this.next = next;
-        }
     }
     
     public LRUCache(int capacity) {
