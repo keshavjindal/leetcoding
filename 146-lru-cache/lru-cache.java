@@ -34,8 +34,6 @@ class LRUCache {
         
         this.head.next = tail;
         this.tail.prev = head;
-        
-        // printlist();
     }
     
     public int get(int key) {
@@ -44,25 +42,14 @@ class LRUCache {
         }
         
         int ans = map.get(key).val;
-        
-        removeNode(map.get(key));
-        Node newnode = new Node(key,ans);
-        insertInLast(newnode);
-        map.put(key , newnode);
-        
-        // printlist();
-        
+        moveToLast(map.get(key));
         return ans;
     }
     
     public void put(int key, int value) {
         if(map.containsKey(key)){
             map.get(key).val = value;
-            removeNode(map.get(key));
-            Node newnode = new Node(key,value);
-            insertInLast(newnode);
-            map.put(key , newnode);
-            
+            moveToLast(map.get(key));
             return;
         }
         else{
@@ -73,24 +60,10 @@ class LRUCache {
             
             Node node = new Node(key,value);
             map.put(key , node);
+            addNode(map.get(key));
         }
-        
-        insertInLast(map.get(key));
-        
-        // printlist();
     }
-    
-    public void printlist(){
-        Node temp = this.head;
-        
-        while(temp != null){
-            System.out.print(temp.key + " ");
-            temp = temp.next;
-        }
-        
-        System.out.println();
-    }
-    
+       
     public void removeNode(Node node){
         Node prev = node.prev;
         Node next = node.next;
@@ -102,7 +75,8 @@ class LRUCache {
         node.prev = null;
     }
     
-    public void insertInLast(Node node){
+    // adds in Last
+    public void addNode(Node node){
         Node prev = this.tail.prev;
         
         prev.next = node;
@@ -110,6 +84,11 @@ class LRUCache {
         
         node.prev = prev;
         node.next = this.tail;
+    }
+    
+    public void moveToLast(Node node){
+        removeNode(node);
+        addNode(node);
     }
 }
 
