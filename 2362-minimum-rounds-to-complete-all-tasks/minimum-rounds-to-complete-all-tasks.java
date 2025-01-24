@@ -6,32 +6,15 @@ class Solution {
         }
 
         List<Integer> values = new ArrayList<>(map.values());
-        int[] dp = minLengthForGivenVal(Collections.max(values));
         int ans = 0;
         for(int val : values){
-            if(dp[val] == -1) return -1;
-            ans += dp[val];
+            if(val == 1) return -1;
+
+            int rem = val % 3;
+
+            if(rem == 0) ans += (val / 3);
+            else ans += 1 + (val/3);            
         }
         return ans;
-    }
-
-    public int[] minLengthForGivenVal(int n){
-        if(n <= 3) n += 7;
-        
-        int[] dp = new int[n + 1];
-
-        dp[0] = -1;
-        dp[1] = -1;
-        dp[2] = 1;
-        dp[3] = 1;
-        
-        for(int i=4; i<=n; i++){
-            int cont1 = dp[i - 2] == -1 ? Integer.MAX_VALUE : dp[i - 2];
-            int cont2 = dp[i - 3] == -1 ? Integer.MAX_VALUE : dp[i - 3];
-
-            dp[i] = Math.min(cont1 , cont2) + 1;
-        }
-
-        return dp;
     }
 }
