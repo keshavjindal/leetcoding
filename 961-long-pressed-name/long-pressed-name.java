@@ -16,14 +16,8 @@ class Solution {
             }
         }
 
-        while(i < name.length()){
-            if(j<typed.length() && name.charAt(i) == typed.charAt(j)){
-                i++;
-                j++;
-            }
-            else{
-                return false;
-            }
+        if(i < name.length()){
+            return false;
         }
 
         while(j < typed.length()){
