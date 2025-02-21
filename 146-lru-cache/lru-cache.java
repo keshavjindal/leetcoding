@@ -1,87 +1,100 @@
 class LRUCache {
-
-    public int cap;
-    public HashMap<Integer,Node> map;
-    public Node head;
-    public Node tail;
-    
-    public class Node{
+    // HashMap and Doubly Linked List
+    class Node{
         int key;
         int val;
-        Node prev;
         Node next;
-        
+        Node prev;
+
         Node(int key, int val){
             this.key = key;
             this.val = val;
-            this.prev = null;
             this.next = null;
+            this.prev = null;
         }
     }
-    
+
+    HashMap<Integer,Node> map;
+    Node head;
+    Node tail;
+    int capacity;
+
     public LRUCache(int capacity) {
-        this.cap = capacity;
         this.map = new HashMap<>();
-        this.head = new Node(-1,-1);
-        this.tail = new Node(-1,-1);
-        
-        this.head.next = tail;
-        this.tail.prev = head;
+        this.head = new Node(-1, -1);
+        this.tail = new Node(-1, -1);
+
+        this.head.next = this.tail;
+        this.tail.prev = this.head;
+
+        this.capacity = capacity;
     }
     
     public int get(int key) {
         if(!map.containsKey(key)){
             return -1;
         }
-        
-        int ans = map.get(key).val;
-        moveToLast(map.get(key));
-        return ans;
+        else{
+            // put the corrosponding node in the last (at tail) (MOST RECENTLY USED)
+            Node node = map.get(key);
+
+            deleteNode(node);
+            addAtTail(node);
+
+            return node.val;
+        }
     }
     
     public void put(int key, int value) {
         if(map.containsKey(key)){
-            map.get(key).val = value;
-            moveToLast(map.get(key));
-            return;
+            // update the value
+            Node node = map.get(key);
+            node.val = value;
+
+            // put the corrosponding node in the last (at tail) (MOST RECENTLY USED)
+            deleteNode(node);
+            addAtTail(node);
         }
         else{
-            if(map.size() == cap){
-                map.remove(this.head.next.key);
-                removeNode(this.head.next);
+            // if cache size is full, delete from HEAD (Least Recently Used)
+            if(this.capacity == this.map.size()){
+                Node deletedNode = deleteAtHead();
+                map.remove(deletedNode.key);
             }
-            
-            Node node = new Node(key,value);
+
+            // create new node
+            Node node = new Node(key, value);
             map.put(key , node);
-            addNode(map.get(key));
+
+            // put the corrosponding node in the last (at tail) (MOST RECENTLY USED)
+            addAtTail(node);
         }
     }
-       
-    public void removeNode(Node node){
-        Node prev = node.prev;
-        Node next = node.next;
-        
-        prev.next = next;
-        next.prev = prev;
-        
-        node.next = null;
-        node.prev = null;
-    }
-    
-    // adds in Last
-    public void addNode(Node node){
-        Node prev = this.tail.prev;
-        
-        prev.next = node;
+
+    // TAIL: Most Recently Used
+    public void addAtTail(Node node){
+        this.tail.prev.next = node;
+        node.prev = this.tail.prev;
+
         this.tail.prev = node;
-        
-        node.prev = prev;
         node.next = this.tail;
     }
-    
-    public void moveToLast(Node node){
-        removeNode(node);
-        addNode(node);
+
+    // HEAD: Least Recently Used
+    public Node deleteAtHead(){
+        return deleteNode(this.head.next);
+    }
+
+    public Node deleteNode(Node node){
+        Node temp = node;
+
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+
+        node.next = null;
+        node.prev = null;
+
+        return temp;
     }
 }
 
