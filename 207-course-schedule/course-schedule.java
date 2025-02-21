@@ -1,58 +1,53 @@
 class Solution {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        // we need to detect cycle in the directed graph
-        // if cycle found, return false; else return true
-        /*
-        
-            0 ----> 1 ----> 2 ----> 0
-            
-            
-            
-        */
-        
+        // we can create a directed graph
+        // and then we need to detect cycle in it
+        // if cycle -> return false
+        // no cycle -> return true
+
+        // create graph
         ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
         for(int i=0; i<numCourses; i++){
             graph.add(new ArrayList<>());
-        }
-        
+        } 
+
         for(int[] edge : prerequisites){
             int a = edge[0];
             int b = edge[1];
-            
-            // b -> a
+
             graph.get(b).add(a);
         }
-        
-        boolean[] visited = new boolean[numCourses];
-        boolean[] recStack = new boolean[numCourses];
-        
+
+        // detect cycle
+        int[] visited = new int[numCourses];
+        // 0 : not explored
+        // 1 : being explored
+        // 2 : fully explored
         for(int i=0; i<numCourses; i++){
-            if(visited[i] == false){
-                boolean val = solve(graph, visited, recStack, i); 
-                if(val == true) return false;
+            if(visited[i] == 0){
+                boolean temp = solve(i, graph, visited);
+                if(temp == false) return false;
             }
         }
+
         return true;
     }
-    
-    public boolean solve(ArrayList<ArrayList<Integer>> graph, boolean[] visited, boolean[] recStack, int src)
-  {
-        visited[src] = true;
-        recStack[src] = true;
-        
-        for(int nbr : graph.get(src)){
-            if(visited[nbr] == true && recStack[nbr] == true){
-                return true;
+
+    public boolean solve(int src, ArrayList<ArrayList<Integer>> graph, int[] visited){
+        visited[src] = 1;
+        ArrayList<Integer> children = graph.get(src);
+
+        for(int child : children){
+            if(visited[child] == 0){
+                boolean temp = solve(child, graph, visited);
+                if(temp == false) return false;
             }
-            
-            if(visited[nbr] == false){
-                if(solve(graph, visited, recStack, nbr) == true){
-                    return true;
-                }
+            else if(visited[child] == 1){
+                return false;
             }
         }
-        
-        recStack[src] = false;
-        return false;
+
+        visited[src] = 2;
+        return true;
     }
 }
