@@ -1,41 +1,45 @@
 class Solution {
     public List<List<Integer>> permute(int[] nums) {
-        /*
-         1, 2, 3
-         
-         list -> 
-            1
-            1 2
-            1 2 3
-            1
-            
-        */
-        
-        ans = new ArrayList<>();
-        helper = new boolean[nums.length];
-        solve(nums , new ArrayList<>());
-        return ans;
-    }
-    
-    public List<List<Integer>> ans;
-    public boolean[] helper;
-    
-    public void solve(int[] arr, List<Integer> list){
-        if(list.size() == arr.length){
-            ans.add(new ArrayList<>(list));
-            return;
+        List<Integer> list = new ArrayList<>();
+        for(int i=0; i<nums.length; i++){
+            list.add(nums[i]);
         }
-        
-        for(int i=0; i<arr.length; i++){
-            if(helper[i] == false){
-                helper[i] = true;
-                list.add(arr[i]);
-                
-                solve(arr , list);
-                
-                helper[i] = false;
-                list.remove(list.size() - 1);
+
+        return solve(list);
+    }
+
+    public List<List<Integer>> solve(List<Integer> list){
+        if(list.size() == 1){
+            List<List<Integer>> br = new ArrayList<>();
+            List<Integer> br_list = new ArrayList<>();
+            br_list.add(list.get(0));
+            br.add(br_list);
+            return br;
+        }
+
+        List<List<Integer>> mr = new ArrayList<>();
+
+        for(int i=0; i<list.size(); i++){
+            int curr_ele = list.get(i);
+            List<Integer> rem_list = new ArrayList<>();
+            for(int j=0; j<list.size(); j++){
+                if(j != i){
+                    rem_list.add(list.get(j));
+                }
+            }
+
+            List<List<Integer>> rr = solve(rem_list);
+
+            for(List<Integer> rr_list : rr){
+                List<Integer> new_list = new ArrayList<>();
+                new_list.add(curr_ele);
+                for(int j=0; j<rr_list.size(); j++){
+                    new_list.add(rr_list.get(j));
+                }
+                mr.add(new_list);
             }
         }
+
+        return mr;
     }
 }
