@@ -10,81 +10,66 @@
  */
 class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        ListNode one = l1;
-        ListNode two = l2;
-        
-        ListNode ans = new ListNode(-1);
-        ListNode temp = ans;
-        
+        ListNode temp1 = l1;
+        ListNode temp2 = l2;
+
         int carry = 0;
-        
-        while(one != null && two != null){
-            int sum = one.val + two.val + carry;
-            carry = 0;
-            
-            if(sum <= 9){
-                ListNode node = new ListNode(sum);
-                temp.next = node;
-                temp = node;
-            }
-            else{
-                ListNode node = new ListNode(sum % 10);
-                temp.next = node;
-                temp = node;
-                
-                carry = 1;
-            }
-            
-            one = one.next;
-            two = two.next;
+        ListNode head = new ListNode(-1);
+        ListNode temp = head;
+
+        while(temp1 != null && temp2 != null){
+            int a = temp1.val;
+            int b = temp2.val;
+
+            int sum = a + b + carry;
+
+            int dig = sum % 10;
+            carry = sum / 10;
+
+            ListNode newnode = new ListNode(dig);
+            temp.next = newnode;
+            temp = temp.next;
+
+            temp1 = temp1.next;
+            temp2 = temp2.next;
         }
-        
-        while(one != null){
-            int sum = one.val + carry;
-            carry = 0;
-            
-            if(sum <= 9){
-                ListNode node = new ListNode(sum);
-                temp.next = node;
-                temp = node;
-            }
-            else{
-                ListNode node = new ListNode(sum % 10);
-                temp.next = node;
-                temp = node;
-                
-                carry = 1;
-            }
-            
-            one = one.next;
+
+        while(temp1 != null){
+            int a = temp1.val;
+
+            int sum = a + carry;
+
+            int dig = sum % 10;
+            carry = sum / 10;
+
+            ListNode newnode = new ListNode(dig);
+            temp.next = newnode;
+            temp = temp.next;
+
+            temp1 = temp1.next;
         }
-        
-        while(two != null){
-            int sum = two.val + carry;
-            carry = 0;
-            
-            if(sum <= 9){
-                ListNode node = new ListNode(sum);
-                temp.next = node;
-                temp = node;
-            }
-            else{
-                ListNode node = new ListNode(sum % 10);
-                temp.next = node;
-                temp = node;
-                
-                carry = 1;
-            }
-            
-            two = two.next;
+
+        while(temp2 != null){
+            int b = temp2.val;
+
+            int sum = b + carry;
+
+            int dig = sum % 10;
+            carry = sum / 10;
+
+            ListNode newnode = new ListNode(dig);
+            temp.next = newnode;
+            temp = temp.next;
+
+            temp2 = temp2.next;
         }
-        
-        if(carry == 1){
-            ListNode node = new ListNode(1);
-            temp.next = node;
-            temp = node;
+
+        if(carry != 0){
+            ListNode newnode = new ListNode(carry);
+            temp.next = newnode;
+            temp = temp.next;
         }
-        
-        return ans.next;
+
+        return head.next;
     }
 }
