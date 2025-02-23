@@ -1,25 +1,48 @@
 class Solution {
     public int lengthOfLongestSubstring(String s) {
-        // bruteforce
-        // consider all substrings in O(n^2)
+        // optimal - O(n)
+        // using frequency map and Acquire-Release strategy
 
+        HashMap<Character,Integer> map = new HashMap<>();
+        int ans = 0;
         int n = s.length();
-        int ans = 1;
 
-        if(n == 0) return 0;
+        int i = -1;
+        int j = -1;
 
-        for(int i=0; i<n; i++){
-            HashSet<Character> set = new HashSet<>();
-            for(int j=i; j<n; j++){
-                char ch = s.charAt(j);
-                if(!set.contains(ch)){
-                    set.add(ch);
-                }
-                else{
+        while(true){
+            boolean f1 = false;
+            boolean f2 = false;
+
+            // acquire
+            while(i < n - 1){
+                f1 = true;
+                i++;
+                char ch = s.charAt(i);
+                map.put(ch , map.getOrDefault(ch , 0) + 1);
+
+                if(map.get(ch) == 2){
                     break;
                 }
+                else{
+                    ans = Math.max(ans , i - j);
+                }
+            }
 
-                ans = Math.max(ans , set.size());
+            // release
+            while(j < i){
+                f2 = true;
+                j++;
+                char ch = s.charAt(j);
+                map.put(ch , map.getOrDefault(ch , 0) - 1);
+
+                if(map.get(ch) == 1){
+                    break;
+                }
+            }
+
+            if(f1 == false && f2 == false){
+                break;
             }
         }
 
