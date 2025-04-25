@@ -2,9 +2,7 @@ class Solution:
     def fib(self, n: int) -> int:
         # tabulation
         dp = [0 , 1]
-        i = 2
-        while i <= n:
+        for i in range(2 , n + 1):
             dp.append(dp[i - 1] + dp[i - 2])
-            i += 1
 
         return dp[n]
