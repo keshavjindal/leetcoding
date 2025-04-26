@@ -4,9 +4,8 @@ class Solution:
         ans = [-1] * n
 
         stack = deque()
-        stack.append(0)
 
-        for i in range(1 , len(nums) * 2):
+        for i in range(2 * n):
             ele = nums[i % n]
 
             while len(stack) > 0 and ele > nums[stack[-1]]:
