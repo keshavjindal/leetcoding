@@ -1,68 +1,41 @@
 class Trie {
-    
-    public Node root;
-    
-    public class Node{
-        Node[] arr;
-        boolean ends;
-        
-        Node(){
-            this.arr = new Node[26];
-            this.ends = false;
-        }
-    }
+    // brute force way to implement a trie!
+    HashSet<String> set;
 
     public Trie() {
-        root = new Node();
+        set = new HashSet<>();
     }
     
     public void insert(String word) {
-        Node curr = this.root;
-        
-        for(int i=0; i<word.length(); i++){
-            char ch = word.charAt(i);
-            
-            if(curr.arr[ch - 'a'] == null){
-                curr.arr[ch - 'a'] = new Node();
-            }
-            
-            curr = curr.arr[ch - 'a'];
-        }
-        
-        curr.ends = true;
+        set.add(word);
     }
     
     public boolean search(String word) {
-        Node curr = this.root;
-        
-        for(int i=0; i<word.length(); i++){
-            char ch = word.charAt(i);
-            
-            if(curr.arr[ch - 'a'] == null){
-                return false;
-            }
-            
-            curr = curr.arr[ch - 'a'];
-        }
-        
-        if(curr.ends == true) return true;
-        else return false;
+        return set.contains(word);
     }
     
     public boolean startsWith(String prefix) {
-        Node curr = this.root;
-        
-        for(int i=0; i<prefix.length(); i++){
-            char ch = prefix.charAt(i);
-            
-            if(curr.arr[ch - 'a'] == null){
-                return false;
+        for(String s : set){
+            int i = 0;
+            int j = 0;
+
+            boolean unequalChar = false;
+            while(i < prefix.length() && j < s.length()){
+                if(prefix.charAt(i) != s.charAt(j)){
+                    unequalChar = true;
+                    break;
+                }
+
+                i++;
+                j++;
             }
-            
-            curr = curr.arr[ch - 'a'];
+
+            if(i == prefix.length() && unequalChar == false){
+                return true;
+            }
         }
-        
-        return true;
+
+        return false;
     }
 }
 
