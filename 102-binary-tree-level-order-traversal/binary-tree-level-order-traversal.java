@@ -24,7 +24,7 @@ class Solution {
 
         while(queue.size() > 0){
             int size = queue.size();
-            List<Integer> temp = new ArrayList<>();
+            ArrayList<Integer> temp = new ArrayList<>();
             while(size > 0){
                 TreeNode rem = queue.remove();
 
