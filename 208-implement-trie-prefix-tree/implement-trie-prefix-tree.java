@@ -1,41 +1,66 @@
 class Trie {
-    // brute force way to implement a trie!
-    HashSet<String> set;
+    // prefix tree
+
+    class Node{
+        Node[] children;
+        boolean ends;
+
+        Node(){
+            children = new Node[26];
+            ends = false;
+        }
+    }  
+
+    Node root;
 
     public Trie() {
-        set = new HashSet<>();
+        root = new Node();
     }
     
     public void insert(String word) {
-        set.add(word);
+        Node curr = root;
+
+        for(int i=0; i<word.length(); i++){
+            char ch = word.charAt(i);
+
+            if(curr.children[ch - 'a'] == null){
+                curr.children[ch - 'a'] = new Node();
+            }
+
+            curr = curr.children[ch - 'a'];
+        }
+
+        curr.ends = true;
     }
     
     public boolean search(String word) {
-        return set.contains(word);
+        Node curr = root;
+
+        for(int i=0; i<word.length(); i++){
+            char ch = word.charAt(i);
+
+            if(curr.children[ch - 'a'] == null) return false;
+            else {
+                curr = curr.children[ch - 'a'];
+            }            
+        }
+
+        return curr.ends;
     }
     
     public boolean startsWith(String prefix) {
-        for(String s : set){
-            int i = 0;
-            int j = 0;
+        Node curr = root;
 
-            boolean unequalChar = false;
-            while(i < prefix.length() && j < s.length()){
-                if(prefix.charAt(i) != s.charAt(j)){
-                    unequalChar = true;
-                    break;
-                }
+        for(int i=0; i<prefix.length(); i++){
+            char ch = prefix.charAt(i);
 
-                i++;
-                j++;
-            }
-
-            if(i == prefix.length() && unequalChar == false){
-                return true;
-            }
+            if(curr.children[ch - 'a'] == null) return false;
+            else {
+                curr = curr.children[ch - 'a'];
+            }            
         }
 
-        return false;
+        return true;
     }
 }
 
