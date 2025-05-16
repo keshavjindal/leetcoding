@@ -1,30 +1,49 @@
 class Solution {
     public boolean isValid(String s) {
         Stack<Character> stack = new Stack<>();
-
-        HashMap<Character,Character> map = new HashMap<>();
-        map.put(')' , '(');
-        map.put(']' , '[');
-        map.put('}' , '{');
-
         for(int i=0; i<s.length(); i++){
             char ch = s.charAt(i);
 
-            if(ch == '(' || ch == '[' || ch == '{'){
-                // opening bracket -> push in stack
+            if(ch == '(' || ch == '{' || ch == '['){
                 stack.push(ch);
             }
             else{
-                // closing bracket
-                // check stack top. if invalid, return false
-                // if valid. pop it and go to next character in string
-                if(stack.size() != 0 && stack.peek() == map.get(ch)){
-                    stack.pop();
-                }
-                else return false;
-            }
-        }   
+                char peekOfStack = stack.size() != 0 ? stack.peek() : '-';
 
-        return stack.size() == 0;
+                if(ch == ')' && peekOfStack != '('){
+                    return false;
+                }
+
+                if(ch == '}' && peekOfStack != '{'){
+                    return false;
+                }
+
+                if(ch == ']' && peekOfStack != '['){
+                    return false;
+                }
+
+                stack.pop();
+            }
+        }
+
+        if(stack.size() != 0) return false;
+        return true;
     }
+
+    /***
+
+        (())[][[[
+        true
+
+        |       |
+        |       |
+        |       |
+        |       |
+        |       |
+        _________
+    
+    
+    
+    
+     */
 }
