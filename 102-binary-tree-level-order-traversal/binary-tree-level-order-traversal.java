@@ -19,19 +19,19 @@ class Solution {
 
         if(root == null) return ans;
 
-        Queue<TreeNode> queue = new ArrayDeque<>();
-        queue.add(root);
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.addLast(root);
 
         while(queue.size() > 0){
             int size = queue.size();
             List<Integer> temp = new ArrayList<>();
             while(size > 0){
-                TreeNode rem = queue.remove();
+                TreeNode rem = queue.removeFirst();
 
                 temp.add(rem.val);
 
-                if(rem.left != null) queue.add(rem.left);
-                if(rem.right != null) queue.add(rem.right);
+                if(rem.left != null) queue.addLast(rem.left);
+                if(rem.right != null) queue.addLast(rem.right);
 
                 size--;
             }
