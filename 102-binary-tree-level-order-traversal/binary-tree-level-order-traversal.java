@@ -19,8 +19,8 @@ class Solution {
 
         if(root == null) return ans;
 
-        Deque<TreeNode> queue = new ArrayDeque<>();
-        queue.addLast(root);
+        ArrayDeque<TreeNode> queue = new ArrayDeque<>();
+        queue.addLast(root); // FIFO
 
         while(queue.size() > 0){
             int size = queue.size();
