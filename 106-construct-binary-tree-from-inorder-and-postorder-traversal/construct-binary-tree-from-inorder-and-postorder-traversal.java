@@ -2,39 +2,49 @@ class Solution {
     public TreeNode buildTree(int[] inorder, int[] postorder) {
         int n = inorder.length;
 
-        HashMap<Integer,Integer> map = new HashMap<>();
-        for(int i=0; i<inorder.length; i++){
-            map.put(inorder[i] , i);
+        // Map each value to its index in the inorder array for quick lookup
+        HashMap<Integer, Integer> inorderIndexMap = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            inorderIndexMap.put(inorder[i], i);
         }
 
-        return buildTreeHelper(inorder, postorder, 0, n - 1, 0, n - 1, map);
+        return buildTreeHelper(inorder, postorder, 0, n - 1, 0, n - 1, inorderIndexMap);
     }
 
     /**
-     * Helper function to build subtree using in and post arrays
-     * @param isi : inorder start index
-     * @param iei : inorder end index 
-     * @param psi : postorder start index
-     * @param pei : postorder end index
+     * Recursively builds the binary tree from inorder and postorder traversals.
+     *
+     * @param inorder     The inorder traversal array
+     * @param postorder   The postorder traversal array
+     * @param inStart     Start index of the current inorder segment
+     * @param inEnd       End index of the current inorder segment
+     * @param postStart   Start index of the current postorder segment
+     * @param postEnd     End index of the current postorder segment
+     * @param indexMap    Map from node values to their indices in inorder array
+     * @return            Root node of the constructed subtree
      */
-    public TreeNode buildTreeHelper(int[] in, int[] post, int isi, int iei, int psi, int pei, HashMap<Integer,Integer> map){
-        if(isi > iei || psi > pei) return null;
+    public TreeNode buildTreeHelper(int[] inorder, int[] postorder,
+                                    int inStart, int inEnd,
+                                    int postStart, int postEnd,
+                                    HashMap<Integer, Integer> indexMap) {
+        if (inStart > inEnd || postStart > postEnd) return null;
 
-        TreeNode root = new TreeNode(post[pei]);
+        int rootVal = postorder[postEnd];
+        TreeNode root = new TreeNode(rootVal);
 
-        int idx = map.get(post[pei]);
-        int eleInRightSubtree = iei - idx;
-        
-        root.left = buildTreeHelper(in, post, isi, idx - 1, psi, pei - eleInRightSubtree - 1, map);
-        root.right = buildTreeHelper(in, post, idx + 1, iei, pei - eleInRightSubtree, pei - 1, map);
+        int rootIndex = indexMap.get(rootVal);
+        int rightTreeSize = inEnd - rootIndex;
+
+        root.left = buildTreeHelper(inorder, postorder,
+                inStart, rootIndex - 1,
+                postStart, postEnd - rightTreeSize - 1,
+                indexMap);
+
+        root.right = buildTreeHelper(inorder, postorder,
+                rootIndex + 1, inEnd,
+                postEnd - rightTreeSize, postEnd - 1,
+                indexMap);
 
         return root;
     }
-
-    /**
-    inorder =       [9,3,15,20,7]
-    postorder =     [9,15,7,20,3]
-    
-    
-     */
 }
