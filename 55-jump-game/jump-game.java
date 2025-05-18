@@ -8,7 +8,7 @@ class Solution {
 
         int n = arr.length;
         int leftMostGoodIndex = n - 1; // where we want to reach
-        for(int i=n-1; i>=0; i--){
+        for(int i=n-2; i>=0; i--){
             if(i + arr[i] >= leftMostGoodIndex){
                 leftMostGoodIndex = i;
             }
