@@ -16,6 +16,7 @@ class Solution {
     // whats the min path sum if we go from (i,j)
     // to bottom right, only using R(right) and D(down) steps
     public int solve(int[][] matrix, int i, int j){
+        if(i == matrix.length - 1 && j == matrix[0].length - 1) return matrix[i][j];
         if(i >= matrix.length || j >= matrix[0].length) return Integer.MAX_VALUE;
 
         if(dp[i][j] != -1) return dp[i][j];
@@ -23,8 +24,6 @@ class Solution {
         int rr1 = solve(matrix, i, j + 1); // go right
         int rr2 = solve(matrix, i + 1, j); // go down
 
-        int better = Math.min(rr1 , rr2);
-        if(better == Integer.MAX_VALUE) better = 0;
-        return dp[i][j] = matrix[i][j] + better;
+        return dp[i][j] = matrix[i][j] + Math.min(rr1 , rr2);
     }
 }
