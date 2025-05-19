@@ -1,65 +1,65 @@
 class LFUCache {
 
-    // key: original key, value: frequency and original value.
-    private Map<Integer, Pair<Integer, Integer>> cache;
-    // key: frequency, value: All keys that have the same frequency.
-    private Map<Integer, LinkedHashSet<Integer>> frequencies;
-    private int minf;
-    private int capacity;
-
-    private void insert(int key, int frequency, int value) {
-        cache.put(key, new Pair<>(frequency, value));
-        frequencies.putIfAbsent(frequency, new LinkedHashSet<>());
-        frequencies.get(frequency).add(key);
-    }
+    HashMap<Integer,Integer> keyValMap;
+    HashMap<Integer,Integer> keyFreqMap;
+    HashMap<Integer,LinkedHashSet<Integer>> freqKeysMap;
+    int cap;
+    int min;
 
     public LFUCache(int capacity) {
-        cache = new HashMap<>();
-        frequencies = new HashMap<>();
-        minf = 0;
-        this.capacity = capacity;
+        keyValMap = new HashMap<>();
+        keyFreqMap = new HashMap<>();
+        freqKeysMap = new HashMap<>();
+        freqKeysMap.put(1 , new LinkedHashSet<>());
+        cap = capacity;
+        min = 0;
     }
-
+    
     public int get(int key) {
-        Pair<Integer, Integer> frequencyAndValue = cache.get(key);
-        if (frequencyAndValue == null) {
-            return -1;
-        }
-        final int frequency = frequencyAndValue.getKey();
-        final Set<Integer> keys = frequencies.get(frequency);
-        keys.remove(key);
-        if (keys.isEmpty()) {
-            frequencies.remove(frequency);
+        if(!keyValMap.containsKey(key)) return -1;
 
-            if (minf == frequency) {
-                ++minf;
-            }
+        int currFreq = keyFreqMap.get(key);
+
+        freqKeysMap.get(currFreq).remove(key);
+        if(currFreq == min && freqKeysMap.get(currFreq).size() == 0){
+            min++;
         }
-        final int value = frequencyAndValue.getValue();
-        insert(key, frequency + 1, value);
-        return value;
+
+        int newFreq = currFreq + 1;
+        if(!freqKeysMap.containsKey(newFreq)){
+            freqKeysMap.put(newFreq , new LinkedHashSet<>());
+        }
+        freqKeysMap.get(newFreq).add(key);
+
+        keyFreqMap.put(key , newFreq);
+        return keyValMap.get(key);
     }
-
+    
     public void put(int key, int value) {
-        if (capacity <= 0) {
-            return;
-        }
-        Pair<Integer, Integer> frequencyAndValue = cache.get(key);
-        if (frequencyAndValue != null) {
-            cache.put(key, new Pair<>(frequencyAndValue.getKey(), value));
-            get(key);
-            return;
-        }
-        if (capacity == cache.size()) {
-            final Set<Integer> keys = frequencies.get(minf);
-            final int keyToDelete = keys.iterator().next();
-            cache.remove(keyToDelete);
-            keys.remove(keyToDelete);
-            if (keys.isEmpty()) {
-                frequencies.remove(minf);
+        if(!keyValMap.containsKey(key)){
+            if(cap == keyValMap.size()){
+                // remove LRU
+                int keyToRemove = freqKeysMap.get(min).iterator().next();
+                freqKeysMap.get(min).remove(keyToRemove);
+                keyFreqMap.remove(keyToRemove);
+                keyValMap.remove(keyToRemove);
             }
+                
+            keyValMap.put(key , value);
+            keyFreqMap.put(key , 1);
+            min = 1;
+            freqKeysMap.get(1).add(key);
         }
-        minf = 1;
-        insert(key, 1, value);
+        else{
+            keyValMap.put(key , value);
+            get(key);
+        }
     }
 }
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache obj = new LFUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
