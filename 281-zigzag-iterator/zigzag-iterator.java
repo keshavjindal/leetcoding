@@ -1,5 +1,7 @@
 public class ZigzagIterator {
     private int current;
+    private int totalElements;
+    private int returnedElements;
   
     // Total number of vectors
     private int listCount;
@@ -18,6 +20,8 @@ public class ZigzagIterator {
         indices.add(0);
         vectors.add(v1); // Adding the provided lists to the vectors list.
         vectors.add(v2);
+        totalElements = v1.size() + v2.size();
+        returnedElements = 0;
     }
 
     // Returns the next element in the zigzag iteration.
@@ -28,8 +32,10 @@ public class ZigzagIterator {
         int result = vector.get(index); // Get the next element.
         indices.set(current, index + 1); // Update the index for the current vector.
         current = (current + 1) % listCount; // Move to the next vector.
+        returnedElements++;
         return result;
     }
+
 
     // Returns true if there is a next element in the iteration, false otherwise.
     public boolean hasNext() {
@@ -45,6 +51,8 @@ public class ZigzagIterator {
         }
         // If we have found a vector that still has elements, return true.
         return true;
+
+        // return returnedElements < totalElements;
     }
 }
 
