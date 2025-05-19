@@ -1,18 +1,39 @@
 class LRUCache {
-    HashMap<Integer,Integer> map;
-    ArrayList<Integer> list;
+    class Node{
+        int key;
+        int val;
+        Node next;
+        Node prev;
+
+        Node(int key, int val){
+            this.key = key;
+            this.val = val;
+            this.next = null;
+            this.prev = null;
+        }
+    }
+
+    HashMap<Integer,Node> map;
     int cap;
+    Node head;
+    Node tail;
 
     public LRUCache(int capacity) {
-        list = new ArrayList<>();
         map = new HashMap<>();
         cap = capacity;
+        head = new Node(-1,-1);
+        tail = new Node(-1,-1);
+        head.next = tail;
+        tail.prev = head;
     }
     
     public int get(int key) {
         if(map.containsKey(key)){
-            putJustUsedKeyInLeft(list , key);
-            return map.get(key);
+            int valToReturn = map.get(key).val;
+            Node node = map.get(key);
+            deleteNode(node);
+            insertAfterHead(node);
+            return valToReturn;
         }
         else{
             return -1;
@@ -21,26 +42,40 @@ class LRUCache {
     
     public void put(int key, int value) {
         if(!map.containsKey(key)){
-            if(list.size() == cap){
-                int keyToRemove = list.remove(cap - 1);
-                map.remove(keyToRemove);
+            if(map.size() == cap){
+                Node nodeToRemove = tail.prev;
+                deleteNode(nodeToRemove);
+                map.remove(nodeToRemove.key);
             }
+
+            Node newNode = new Node(key,value);
+            map.put(key , newNode);
+            insertAfterHead(newNode);
         }
-        
-        map.put(key , value);
-        putJustUsedKeyInLeft(list , key);
+        else{
+            map.get(key).val = value;    
+            deleteNode(map.get(key));   
+            insertAfterHead(map.get(key));
+        }        
     }
 
-    public void putJustUsedKeyInLeft(ArrayList<Integer> list, int key){
-        // put the key in leftmost index (MRU)
-        for(int i=0; i<list.size(); i++){
-            if(list.get(i) == key){
-                list.remove(i);
-                break;
-            }
-        }
+    public void deleteNode(Node node){
+        Node prev = node.prev;
+        prev.next = node.next;
+        node.next.prev = prev;
 
-        list.add(0 , key);
+        node.next = null;
+        node.prev = null;
+    }
+
+    public void insertAfterHead(Node node){
+        Node next = head.next;
+
+        head.next = node;
+        next.prev = node;
+
+        node.prev = head;
+        node.next = next;
     }
 }
 
