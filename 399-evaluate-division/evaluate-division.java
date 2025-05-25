@@ -20,7 +20,6 @@ class Solution {
 
         int idx = 0;
         for(List<String> query : queries){
-            HashSet<String> visited = new HashSet<>();
             String from = query.get(0);
             String to = query.get(1);
 
@@ -28,7 +27,7 @@ class Solution {
                 ans[idx] = -1.0;
             }
             else{
-                ans[idx] = solve(from , to, map, visited);
+                ans[idx] = bfs(map, from , to);
             }
             idx++;
         }
@@ -36,25 +35,42 @@ class Solution {
         return ans;
     }
 
-    public double solve(String from, String to, HashMap<String,HashMap<String,Double>> graph, HashSet<String> visited){
-        if(from.equals(to)) return 1.0;
-        
-        visited.add(from);
-        HashMap<String,Double> children = graph.get(from);
+    public double bfs(HashMap<String,HashMap<String,Double>> graph, String from, String to){
+        HashSet<String> visited = new HashSet<>();
+        Queue<pair> queue = new LinkedList<>();
 
-        double ans = 1.0;
+        queue.add(new pair(from , 1.0));
 
-        for(String key : children.keySet()){
-            double val = children.get(key);
+        while(queue.size() > 0){
+            pair rem = queue.remove();
 
-            if(!visited.contains(key)){
-                double rr = solve(key, to, graph, visited);
-                if(rr != -1){
-                    return ans * val * rr;
+            if(visited.contains(rem.str)) continue;
+
+            if(rem.str.equals(to)){
+                return rem.val;
+            }
+
+            visited.add(rem.str);
+            HashMap<String,Double> children = graph.get(rem.str);
+
+            for(String child : children.keySet()){
+                double val = children.get(child);
+                if(!visited.contains(child)){
+                    queue.add(new pair(child , rem.val * val));
                 }
             }
         }
-        
+
         return -1.0;
+    }
+
+    public class pair{
+        String str;
+        double val;
+
+        pair(String str, double val){
+            this.str = str;
+            this.val = val;
+        }
     }
 }
