@@ -1,53 +1,71 @@
 class Solution {
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        /*
-            we need to return the topological ordering of the graph.
-            DAG's
-        */
-        
+        // recursive using dfs
+        int n = numCourses;
+
         ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
-        for(int i=0; i<numCourses; i++){
+        for(int i=0; i<n; i++){
             graph.add(new ArrayList<>());
         }
-        
-        int[] indegree = new int[numCourses];
-        
-        for(int[] e : prerequisites){
-            int a = e[0];
-            int b = e[1];
-            
-            // b -> a
+
+        for(int[] edge : prerequisites){
+            int a = edge[0];
+            int b = edge[1];
+
             graph.get(b).add(a);
-            indegree[a] += 1;
         }
-        
-        // solve iteratively: kahn's algorithm
-        // bfs
-        int[] ans = new int[numCourses];
-        int idx = 0;
-        
-        Queue<Integer> queue = new ArrayDeque<>();
-        for(int i=0; i<numCourses; i++){
-            if(indegree[i] == 0){
-                queue.add(i);
+
+        boolean[] visited = new boolean[n];
+        boolean[] visiting = new boolean[n]; // current recursion stack
+        ordering = new int[n];
+        idx = n - 1;
+        for(int i=0; i<n; i++){
+            if(!visited[i]){
+                boolean res = dfs(graph, visited, visiting, i);
+
+                if(res == false) return new int[0];
             }
         }
+
+        // for(int i=0; i<n; i++){
+        //     System.out.print(ordering[i] + " "); 
+        // }
+        // System.out.println();
+
+        return ordering;
         
-        while(queue.size() > 0){
-            int rem = queue.remove();
-            
-            ans[idx] = rem;
-            idx++;
-            
-            for(int nbr : graph.get(rem)){
-                indegree[nbr] -= 1;
-                if(indegree[nbr] == 0){
-                    queue.add(nbr);
-                }
-            }
-        }
-        
-        if(idx == numCourses) return ans;
-        else return new int[0];
     }
+
+    public int[] ordering; // topological ordering    
+    public int idx;
+
+    public boolean dfs(ArrayList<ArrayList<Integer>> graph, boolean[] visited, boolean[] visiting, int src){
+        if(visiting[src] == true) return false;
+
+        visiting[src] = true;
+        
+        for(int child : graph.get(src)){
+            if(!visited[child]){
+                boolean rr = dfs(graph, visited, visiting, child);
+                if(rr == false) return false;
+            }
+        }
+
+        visiting[src] = false;
+        visited[src] = true;
+        ordering[idx] = src;
+        idx--;
+        return true;
+    }
+
+
+    /**
+      (a,b): b -> a
+
+
+      0 -> 1 -> 3
+      |  
+      2 
+    
+     */
 }
