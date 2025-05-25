@@ -8,59 +8,44 @@ class Solution {
             graph.add(new ArrayList<>());
         }
 
+        int[] indegree = new int[n];
+        // (a,b) b -> a
         for(int[] edge : prerequisites){
             int a = edge[0];
             int b = edge[1];
 
             graph.get(b).add(a);
+            indegree[a] = indegree[a] + 1;
         }
 
-        boolean[] visited = new boolean[n];
-        boolean[] visiting = new boolean[n]; // current recursion stack
-        ordering = new int[n];
-        idx = n - 1;
+        Queue<Integer> queue = new LinkedList<>();
+
         for(int i=0; i<n; i++){
-            if(!visited[i]){
-                boolean res = dfs(graph, visited, visiting, i);
-
-                if(res == false) return new int[0];
+            if(indegree[i] == 0){
+                queue.add(i);
             }
         }
 
-        return ordering;
+        if(queue.size() == 0) return new int[0];
         
-    }
-
-    public int[] ordering; // topological ordering    
-    public int idx;
-
-    public boolean dfs(ArrayList<ArrayList<Integer>> graph, boolean[] visited, boolean[] visiting, int src){
-        if(visiting[src] == true) return false;
-
-        visiting[src] = true;
+        int[] ordering = new int[n];
+        int idx = 0;
         
-        for(int child : graph.get(src)){
-            if(!visited[child]){
-                boolean rr = dfs(graph, visited, visiting, child);
-                if(rr == false) return false;
+        while(queue.size() > 0){
+            int rem = queue.remove();
+
+            ordering[idx] = rem;
+            idx++;
+
+            for(int child : graph.get(rem)){
+                indegree[child]--;
+                if(indegree[child] == 0){
+                    queue.add(child);
+                }
             }
-        }
+        } 
 
-        visiting[src] = false;
-        visited[src] = true;
-        ordering[idx] = src;
-        idx--;
-        return true;
+        if(idx == n) return ordering;
+        else return new int[0];
     }
-
-
-    /**
-      (a,b): b -> a
-
-
-      0 -> 1 -> 3
-      |  
-      2 
-    
-     */
 }
