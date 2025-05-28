@@ -38,7 +38,7 @@ class Solution {
 
             for(pair child : graph.get(rem.src)){
                 if(visited[child.src] == false){
-                    pq.add(child);
+                    pq.add(new pair(child.src , child.val));
                 }
             }
         }
