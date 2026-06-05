@@ -1,72 +1,85 @@
 class Solution {
     public int orangesRotting(int[][] grid) {
+        Queue<pair> pq = new ArrayDeque<pair>();
         int m = grid.length;
         int n = grid[0].length;
 
-        Queue<pair> queue = new LinkedList<>();
-        boolean[][] visited = new boolean[m][n];
         for(int i=0; i<m; i++){
             for(int j=0; j<n; j++){
                 if(grid[i][j] == 2){
-                    // rotten
-                    queue.add(new pair(i,j,0));
+                    // rotten orange
+                    pq.add(new pair(i, j, grid[i][j]));
                 }
             }
         }
 
+        int pqInitSize = pq.size();
+
         int ans = 0;
-        while(queue.size() > 0){
-            pair rem = queue.remove();
+        while(pq.size() > 0){
+            int size = pq.size();
+            boolean orangeRotted = false;
+            while(size > 0){
+                pair rem = pq.remove();
 
-            int i = rem.i;
-            int j = rem.j;
+                int i = rem.i;
+                int j = rem.j;
 
-            if(visited[i][j] == true) continue;
-            visited[i][j] = true;
+                if(i + 1 < m && grid[i + 1][j] == 1){
+                    grid[i + 1][j] = 2;
+                    pq.add(new pair(i + 1, j, 2));
+                    orangeRotted = true;
+                }
 
-            int min = rem.min;
-            ans = Math.max(ans , min);
+                if(i - 1 >= 0 && grid[i - 1][j] == 1){
+                    grid[i - 1][j] = 2;
+                    pq.add(new pair(i - 1, j, 2));
+                    orangeRotted = true;
+                }
 
-            helper(grid, i, j + 1, min + 1, queue, visited);
-            helper(grid, i + 1, j, min + 1, queue, visited);
-            helper(grid, i - 1, j, min + 1, queue, visited);
-            helper(grid, i, j - 1, min + 1, queue, visited);       
+                if(j + 1 < n && grid[i][j + 1] == 1){
+                    grid[i][j + 1] = 2;
+                    pq.add(new pair(i, j + 1, 2));
+                    orangeRotted = true;
+                }
+
+                if(j - 1 >= 0 && grid[i][j - 1] == 1){
+                    grid[i][j - 1] = 2;
+                    pq.add(new pair(i, j - 1, 2));
+                    orangeRotted = true;
+                }
+                
+                size--;
+            }
+
+            if(orangeRotted = true){
+                ans++;
+            }
         }
 
         for(int i=0; i<m; i++){
             for(int j=0; j<n; j++){
                 if(grid[i][j] == 1){
-                    // fresh
+                    // fresh orange
                     return -1;
                 }
             }
         }
 
-        return ans;
-    }
+        if(pqInitSize == 0) return 0;
 
-    public void helper(int[][] grid, int i, int j, int min, Queue<pair> queue, boolean[][] visited){
-        if(i < 0 || j < 0 || i >= grid.length || j >= grid[0].length){
-            return;
-        }
-
-        if(visited[i][j] == true) return;
-        if(grid[i][j] != 1) return;
-
-        grid[i][j] = 2;
-        queue.add(new pair(i, j, min));
+        return ans - 1;
     }
 
     public class pair{
         int i;
         int j;
-        int min;
+        int val;
 
-        pair(int i, int j, int min){
+        pair(int i, int j, int val){
             this.i = i;
             this.j = j;
-            this.min = min;
+            this.val = val;
         }
-
     }
 }
